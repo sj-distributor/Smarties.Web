@@ -75,8 +75,8 @@ export const Home = () => {
         <Menu
           className="!border-e-0"
           mode="inline"
-          defaultOpenKeys={["1"]}
-          defaultSelectedKeys={["1"]}
+          defaultOpenKeys={["accountmanagement"]}
+          defaultSelectedKeys={["accountmanagement"]}
           items={newRouteList}
         />
       </Sider>
