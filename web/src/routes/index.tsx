@@ -30,7 +30,7 @@ export const Router = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/test" />} />
+      <Route path="/" element={<Navigate to="/management" />} />
       <Route path="/login" element={<Login />} />
       <Route element={<Home />}>{routes}</Route>
     </Routes>

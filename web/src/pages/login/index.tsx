@@ -12,7 +12,7 @@ export const Login = () => {
   return (
     <div className="w-full h-[100vh] flex justify-center items-center bg-[#f6f6f6]">
       <div className="w-[800px] h-[500px] flex rounded-[20px] overflow-hidden">
-        <div className="w-[50%] bg-[url('./assets/bg.png')] bg-cover" />
+        <div className="w-[50%] bg-[url('./assets/login.png')] bg-cover" />
         <div className="w-[50%] bg-[#fff] p-[2rem] flex justify-center items-center">
           <div className="w-full">
             <div className="font-semibold text-[1.3rem]">欢迎回来!</div>
