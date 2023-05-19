@@ -28,7 +28,6 @@ export const Login = () => {
               className="m-[0.3rem_0_1rem] text-[0.8rem] py-[0.6rem]"
               onChange={(e) => onInputLoginName(e.target.value)}
               autoComplete="true"
-              style={{ background: "white !important" }}
             />
             <div className="text-[.8rem]">密码</div>
             <Input.Password
