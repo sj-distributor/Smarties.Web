@@ -23,17 +23,17 @@ export interface IRouteListDto {
 
 export const RouteList: IRouteListDto[] = [
   {
-    key: "accountmanagement",
+    key: "accountManagement",
     icon: <PieChartOutlined />,
-    path: "/accountmanagement",
-    label: <Link to={"/accountmanagement"}>账号管理</Link>,
+    path: "/accountManagement",
+    label: <Link to={"/accountManagement"}>账号管理</Link>,
     component: <AccountManagement />,
   },
   {
-    key: "rightsmanagement",
+    key: "rightsManagement",
     icon: <PieChartOutlined />,
-    path: "/rightsmanagement",
-    label: <Link to={"/rightsmanagement"}>权限管理</Link>,
+    path: "/rightsManagement",
+    label: <Link to={"/rightsManagement"}>权限管理</Link>,
     component: <RightsManagement />,
   },
 ];

@@ -34,15 +34,6 @@ export const Home = () => {
         </div>
       ),
     },
-    {
-      key: "2",
-      label: (
-        <div className="flex items-center">
-          <SettingOutlined className="pr-[0.6rem]" />
-          <Link to="/login">设置</Link>
-        </div>
-      ),
-    },
   ];
 
   const {
