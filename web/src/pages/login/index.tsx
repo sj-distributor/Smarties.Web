@@ -14,10 +14,10 @@ export const Login = () => {
     <div className="w-full h-[100vh] flex justify-center items-center bg-[url(./assets/1.avif)] bg-cover">
       <div className="w-[30rem] h-[25rem] rounded-[1.25rem] overflow-hidden">
         <div className="bg-[#fff] h-[100%] p-[2rem] flex flex-col justify-center relative">
-          <div className="font-semibold text-[0.75rem] absolute top-[35px]">
+          <div className="font-semibold text-[0.75rem] absolute top-[2.1875rem]">
             欢迎登录!
           </div>
-          <div className="p-[30px_0_35px] font-semibold text-[1.375rem] text-center tracking-[.125rem]">
+          <div className="p-[1.875rem_0_2.1875rem] font-semibold text-[1.375rem] text-center tracking-[.125rem]">
             SMARTIES管理系统
           </div>
           <form>
