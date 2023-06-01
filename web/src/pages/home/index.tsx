@@ -2,10 +2,9 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   PoweroffOutlined,
-  SettingOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Button, Dropdown, Layout, Menu, MenuProps, Space, theme } from "antd";
+import { Button, Dropdown, Layout, Menu, MenuProps, theme } from "antd";
 import { Link, Outlet } from "react-router-dom";
 
 import { RouteList } from "@/routes/route-list";
@@ -66,8 +65,8 @@ export const Home = () => {
         <Menu
           className="!border-e-0"
           mode="inline"
-          defaultOpenKeys={["accountmanagement"]}
-          defaultSelectedKeys={["accountmanagement"]}
+          defaultOpenKeys={["accountManagement"]}
+          defaultSelectedKeys={["accountManagement"]}
           items={newRouteList}
         />
       </Sider>

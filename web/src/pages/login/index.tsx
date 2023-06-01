@@ -1,4 +1,3 @@
-import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { Button, Input } from "antd";
 
 import { useAction } from "./hook";
@@ -12,39 +11,35 @@ export const Login = () => {
 
   return (
     <div className="w-full h-[100vh] flex justify-center items-center bg-[url(./assets/1.avif)] bg-cover">
-      <div className="w-[30rem] h-[25rem] rounded-[1.25rem] overflow-hidden">
-        <div className="bg-[#fff] h-[100%] p-[2rem] flex flex-col justify-center relative">
-          <div className="font-semibold text-[0.75rem] absolute top-[2.1875rem]">
+      <div className="w-[30rem] rounded-[1.25rem] overflow-hidden">
+        <div className="bg-[#fff] h-[100%] p-[3rem_2rem] flex flex-col justify-center relative">
+          <div className="font-semibold text-[.8125rem] absolute top-[2.1875rem]">
             欢迎登录!
           </div>
-          <div className="p-[1.875rem_0_2.1875rem] font-semibold text-[1.375rem] text-center tracking-[.125rem]">
-            SMARTIES管理系统
+          <div className="p-[1.875rem_0_2.1875rem] font-semibold text-[1.375rem]">
+            SMARTIES 管理系统
           </div>
           <form>
             <div className="text-[.8rem]">用户名</div>
             <Input
               placeholder="请输入用户名"
               size="large"
-              className="m-[0.3rem_0_1rem] text-[0.8rem] py-[0.6rem]"
-              onChange={(e) => onInputLoginName(e.target.value)}
+              className="m-[.3rem_0_1rem] text-[.8rem] py-[.6rem]"
+              onChange={(event) => onInputLoginName(event.target.value)}
               autoComplete="true"
             />
             <div className="text-[.8rem]">密码</div>
             <Input.Password
               placeholder="请输入密码"
-              iconRender={(visible) =>
-                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-              }
               size="large"
-              className="m-[0.3rem_0_2rem] text-[0.8rem] py-[0.6rem]"
-              onChange={(e) => onInputLoginPassword(e.target.value)}
+              className="m-[.3rem_0_2rem] text-[.8rem] py-[.6rem]"
+              onChange={(event) => onInputLoginPassword(event.target.value)}
               autoComplete="false"
               visibilityToggle={false}
             />
             <Button
-              className="w-full !bg-[#1677ff]"
+              className="w-full bg-gradient-to-tr from-[#74bfc8] to-[#5c5cb4] hover:opacity-80 !text-[white]"
               size="large"
-              type="primary"
               onClick={() => navigate("/accountManagement")}
             >
               登录
