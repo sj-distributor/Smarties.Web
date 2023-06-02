@@ -5,10 +5,11 @@ import {
   DeleteOutlined,
   ExclamationCircleOutlined,
   FormOutlined,
-  IdcardOutlined,
+  ReloadOutlined,
+  SearchOutlined,
+  UsergroupAddOutlined,
 } from "@ant-design/icons";
 import { Button, Input, Modal, Select, Switch, Table } from "antd";
-import { clone } from "ramda";
 
 import { useAction } from "./hook";
 
@@ -22,52 +23,30 @@ export interface IUserAccount {
 export const AccountManagement = () => {
   const {
     userList,
-    inputUserName,
-    selectUserState,
     selectUserInformation,
     loading,
-    open,
+    isOpenChangeStateModal,
+    isOpenAddUserModal,
+    isOpenEditModal,
+    isOpenDeleteModal,
+    editUserInformation,
     setUserList,
     setInputUserName,
     setSelectUserState,
     setSelectUserInformation,
-    setLoading,
-    setOpen,
+    setIsOpenChangeStateModal,
+    setIsOpenAddUserModal,
+    setIsOpenEditModal,
+    setIsOpenDeleteModal,
+    setAddUserName,
+    setAddUserPassword,
+    setConfirmUserPassword,
+    onConfirm,
+    onCancel,
+    onReset,
+    onCreateUserAccount,
+    setEditUserInformation,
   } = useAction();
-
-  const onChangeInputUserName = (value: string) => {
-    setInputUserName(value);
-  };
-
-  const onChangeSelectUserState = (state: boolean) => {
-    setSelectUserState(state);
-  };
-
-  const showModal = () => {
-    setOpen(true);
-  };
-
-  const handleOk = () => {
-    setLoading(true);
-
-    setTimeout(() => {
-      const newUserList = clone(userList);
-
-      newUserList[selectUserInformation.index].state = false;
-      setUserList(newUserList);
-      setLoading(false);
-      setOpen(false);
-    }, 500);
-  };
-
-  const handleCancel = () => {
-    setOpen(false);
-  };
-
-  const onReset = () => {
-    inputUserName !== "" && setInputUserName("");
-    selectUserState !== null && setSelectUserState(null);
-  };
 
   const columns = [
     {
@@ -87,13 +66,13 @@ export const AccountManagement = () => {
       render: (text: number) => {
         if (text) {
           return (
-            <div className="max-w-max p-[2px_5px] bg-[#66ee71] text-[#fff] rounded-[5px] font-bold">
+            <div className="max-w-max p-[2px_5px] bg-[#66ee71] text-[#fff] font-semibold">
               正在使用
             </div>
           );
         } else {
           return (
-            <div className="max-w-max bg-[#fbeedb] p-[2px_5px] text-orange-400 rounded-[5px] font-bold">
+            <div className="max-w-max bg-[#fbeedb] p-[2px_5px] text-orange-400  font-semibold">
               已停用
             </div>
           );
@@ -102,7 +81,7 @@ export const AccountManagement = () => {
     },
     {
       title: "操作",
-      width: 260,
+      width: 240,
       render: (_: string, record: IUserAccount, index: number) => {
         return (
           <div className="flex items-center">
@@ -111,7 +90,8 @@ export const AccountManagement = () => {
                 checked={record.state}
                 onClick={() => {
                   if (record.state) {
-                    showModal();
+                    setIsOpenChangeStateModal(true);
+
                     setSelectUserInformation({
                       userName: record.userName,
                       index: index,
@@ -127,18 +107,20 @@ export const AccountManagement = () => {
             </div>
             <Button
               type="primary"
-              className="flex items-center text-[#fff] pr-[0] pl-[8px] font-bold mr-[12px] h-[28px]"
+              className="flex items-center text-[#fff] px-[8px] font-medium mr-[12px] h-[28px] rounded-none"
+              onClick={() => setIsOpenEditModal(true)}
             >
-              <FormOutlined className="text-[16px]" />
-              <div className="opacity-90 ml-[-1px]">【编辑】</div>
+              <FormOutlined />
+              <div className="ml-[6px]">编辑</div>
             </Button>
             <Button
               type="primary"
-              className="flex items-center text-[#fff] pr-[2px] pl-[8px] font-bold h-[28px]"
+              className="flex items-center text-[#fff] px-[8px] font-medium h-[28px] rounded-none"
               danger
+              onClick={() => setIsOpenDeleteModal(true)}
             >
-              <DeleteOutlined className="text-[16px]" />
-              <div className="opacity-90 ml-[-3px]">【删除】</div>
+              <DeleteOutlined />
+              <div className="ml-[6px]">删除</div>
             </Button>
           </div>
         );
@@ -146,79 +128,280 @@ export const AccountManagement = () => {
     },
   ];
 
+  const titleStyle = "text-[.875rem] font-medium mb-[.5rem]";
+
   return (
     <>
       <div className="pb-[32px] flex justify-between items-center">
         <div className="flex items-center">
           <Input
+            className="rounded-none"
             placeholder="请输入用户名"
             allowClear
-            onChange={(event) => onChangeInputUserName(event.target.value)}
+            autoFocus
+            onChange={(event) => setInputUserName(event.target.value)}
           />
           <Select
             placeholder="请选择状态"
-            onChange={(state) => onChangeSelectUserState(state)}
-            className="mx-[12px]"
+            onChange={(state) => setSelectUserState(state)}
+            className="mx-[12px] !rounded-none"
             allowClear
             options={[
               { value: true, label: "正在使用" },
               { value: false, label: "已停用" },
             ]}
           />
-          <Button type="primary" className="mr-[12px] font-bold">
-            搜索
+          <Button
+            type="primary"
+            className="mr-[12px] font-semibold rounded-none flex items-center px-[8px]"
+          >
+            <SearchOutlined />
+            <div className="ml-[6px] font-semibold">搜索</div>
           </Button>
-          <Button type="primary" className="font-bold" onClick={onReset}>
-            重置
+          <Button
+            type="primary"
+            className="font-semibold rounded-none flex items-center px-[8px]"
+            onClick={onReset}
+          >
+            <ReloadOutlined />
+            <div className="ml-[6px] font-semibold">重置</div>
           </Button>
         </div>
-        <Button type="primary" className="flex items-center px-[8px]">
-          <IdcardOutlined className="text-[16px] text-[#fff] mr-[6px]" />
-          <div className="font-bold">添加用户</div>
+        <Button
+          type="primary"
+          className="flex items-center px-[8px] rounded-none"
+          onClick={() => setIsOpenAddUserModal(true)}
+        >
+          <UsergroupAddOutlined />
+          <div className="ml-[6px] font-semibold">添加用户</div>
         </Button>
       </div>
       <Table
+        className="!rounded-none"
         dataSource={userList}
         columns={columns}
         bordered
         rowKey={(record) => {
           return record.id;
         }}
-        scroll={{ y: 560 }}
+        scroll={{ y: 550 }}
         pagination={{
           pageSizeOptions: [10, 20],
           showQuickJumper: true,
-          showTitle: true,
+          showSizeChanger: true,
         }}
       />
+      {/* 添加用户 */}
       <Modal
-        open={open}
+        width={420}
+        open={isOpenAddUserModal}
         title={
-          <div className="flex items-center">
-            <ExclamationCircleOutlined className="text-[orange] text-[20px] mr-[8px]" />
-            <div>停用</div>
+          <div className="pb-[8px] flex items-center text-[18px] ">
+            <UsergroupAddOutlined className="mr-[6px]" />
+            <div>添加用户</div>
           </div>
         }
-        onOk={handleOk}
-        onCancel={handleCancel}
-        closeIcon={<CloseSquareOutlined className="text-[18px] mb-[-3px]" />}
+        onOk={onConfirm}
+        onCancel={onCancel}
+        closable={false}
         footer={[
-          <Button key="back" onClick={handleCancel}>
+          <Button
+            key="back"
+            onClick={onCancel}
+            className="hover:bg-[#fff] font-medium"
+          >
             取消
           </Button>,
           <Button
             key="submit"
             type="primary"
             loading={loading}
-            onClick={handleOk}
+            onClick={onConfirm}
           >
             确认
           </Button>,
         ]}
       >
-        <div>
+        <form>
+          <div className="my-[32px]">
+            <div className="text-[14px] mb-[8px] font-medium">用户名</div>
+            <Input
+              placeholder="请输入用户名"
+              size="large"
+              className="text-[14px] py-[9.6px]"
+              onChange={(event) => setAddUserName(event.target.value)}
+              autoComplete="false"
+              allowClear
+            />
+          </div>
+          <div className="my-[32px]">
+            <div className="text-[14px] mb-[8px] font-medium">密码</div>
+            <Input.Password
+              placeholder="请输入密码"
+              size="large"
+              className="text-[14px] py-[9.6px]"
+              onChange={(event) => setAddUserPassword(event.target.value)}
+              autoComplete="new-password"
+              allowClear
+            />
+          </div>
+          <div className="my-[32px]">
+            <div className="text-[14px] mb-[8px] font-medium">确认密码</div>
+            <Input.Password
+              placeholder="请再次输入密码"
+              size="large"
+              className="text-[14px] py-[9.6px]"
+              onChange={(event) => setConfirmUserPassword(event.target.value)}
+              autoComplete="new-password"
+              allowClear
+            />
+          </div>
+        </form>
+      </Modal>
+      {/* 更改状态 */}
+      <Modal
+        open={isOpenChangeStateModal}
+        title={
+          <div className="flex items-center">
+            <ExclamationCircleOutlined className="text-[orange] text-[20px] mr-[8px]" />
+            <div>停用账号</div>
+          </div>
+        }
+        onOk={onConfirm}
+        onCancel={onCancel}
+        closable={false}
+        footer={[
+          <Button
+            key="back"
+            onClick={onCancel}
+            className="hover:bg-[#fff] font-medium"
+          >
+            取消
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            loading={loading}
+            onClick={onConfirm}
+            className="font-medium"
+          >
+            确定
+          </Button>,
+        ]}
+      >
+        <div className="pt-[16px]">
           确认停用用户名为
-          <span className="font-bold px-[6px]">
+          <span className="font-semibold px-[6px]">
+            {selectUserInformation.userName}
+          </span>
+          的账号吗？
+        </div>
+      </Modal>
+      {/* 编辑 */}
+      <Modal
+        width={420}
+        open={isOpenEditModal}
+        title={
+          <div className="flex items-center">
+            <ExclamationCircleOutlined className="text-[orange] text-[20px] mr-[8px]" />
+            <div>更改用户账号信息</div>
+          </div>
+        }
+        onOk={onConfirm}
+        onCancel={onCancel}
+        closable={false}
+        footer={[
+          <Button
+            key="back"
+            onClick={onCancel}
+            className="hover:bg-[#fff] font-medium"
+          >
+            取消
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            loading={loading}
+            onClick={onConfirm}
+          >
+            确认
+          </Button>,
+        ]}
+      >
+        <div className="my-[2rem]">
+          <div className={titleStyle}>用户名</div>
+          <Input
+            defaultValue={editUserInformation.userName}
+            size="large"
+            className="text-[.875rem]"
+            onChange={(e) => {
+              setEditUserInformation((preValue) => {
+                return { ...preValue, teamName: e.target.value };
+              });
+            }}
+          />
+        </div>
+        <div className="my-[2rem]">
+          <div className={titleStyle}>原密码</div>
+          <Input.Password
+            placeholder="请输入原密码"
+            size="large"
+            className="text-[.875rem]"
+            autoComplete="new-password"
+          />
+        </div>
+        <div className="my-[2rem]">
+          <div className={titleStyle}>新密码</div>
+          <Input.Password
+            placeholder="请输入新密码"
+            size="large"
+            className="text-[.875rem]"
+            autoComplete="new-password"
+          />
+        </div>
+        <div className="my-[2rem]">
+          <div className={titleStyle}>确认新密码</div>
+          <Input.Password
+            placeholder="请再次输入新密码"
+            size="large"
+            className="text-[.875rem]"
+            autoComplete="new-password"
+          />
+        </div>
+      </Modal>
+      {/* 删除 */}
+      <Modal
+        open={isOpenDeleteModal}
+        title={
+          <div className="flex items-center">
+            <ExclamationCircleOutlined className="text-[orange] text-[20px] mr-[8px]" />
+            <div>删除</div>
+          </div>
+        }
+        onOk={onConfirm}
+        onCancel={onCancel}
+        closable={false}
+        footer={[
+          <Button
+            key="back"
+            onClick={onCancel}
+            className="hover:bg-[#fff] font-medium"
+          >
+            取消
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            loading={loading}
+            onClick={onConfirm}
+          >
+            确认
+          </Button>,
+        ]}
+      >
+        <div className="pt-[16px]">
+          确认停用用户名为
+          <span className="font-semibold px-[6px]">
             {selectUserInformation.userName}
           </span>
           的账号吗？
