@@ -14,7 +14,10 @@ if (container) {
 
   root.render(
     <React.StrictMode>
-      <ConfigProvider locale={zhCN}>
+      <ConfigProvider
+        locale={zhCN}
+        theme={{ token: { colorPrimary: "#2082fd" } }}
+      >
         <App />
       </ConfigProvider>
     </React.StrictMode>

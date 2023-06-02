@@ -2,10 +2,27 @@ import { message } from "antd";
 import { clone } from "ramda";
 import { useEffect, useState } from "react";
 
-import { IUserAccount } from ".";
+export interface IUserAccountResponse {
+  id: string;
+  userName: string;
+  state: boolean;
+  createDate: string;
+}
+
+export interface ICreateUserDto {
+  userName: string;
+  password?: string;
+  confirmPassword?: string;
+}
+
+export interface IUpdateUserInformationDto extends ICreateUserDto {
+  id: string;
+  originalPassword?: string;
+  index?: number;
+}
 
 export const useAction = () => {
-  const [userList, setUserList] = useState<IUserAccount[]>([
+  const [userList, setUserList] = useState<IUserAccountResponse[]>([
     {
       id: "1",
       userName: "testEnable1",
@@ -84,14 +101,6 @@ export const useAction = () => {
 
   const [selectUserState, setSelectUserState] = useState<boolean | null>(null);
 
-  const [selectUserInformation, setSelectUserInformation] = useState<{
-    userName: string;
-    index: number;
-  }>({
-    userName: "",
-    index: 0,
-  });
-
   const [loading, setLoading] = useState<boolean>(false);
 
   const [isOpenAddUserModal, setIsOpenAddUserModal] = useState<boolean>(false);
@@ -109,28 +118,19 @@ export const useAction = () => {
 
   const [confirmUserPassword, setConfirmUserPassword] = useState<string>("");
 
-  const [editUserInformation, setEditUserInformation] = useState<IUserAccount>({
-    id: "",
-    userName: "",
-    state: true,
-    createDate: "",
-  });
+  const [updateUserInformation, setUpdateUserInformation] =
+    useState<IUpdateUserInformationDto>({
+      id: "",
+      userName: "",
+      originalPassword: "",
+      password: "",
+      confirmPassword: "",
+      index: 0,
+    });
 
-  const onConfirm = () => {
-    setLoading(true);
+  const [messageApi, contextHolder] = message.useMessage();
 
-    if (isOpenChangeStateModal) {
-      const newUserList = clone(userList);
-
-      newUserList[selectUserInformation.index].state = false;
-      setUserList(newUserList);
-    }
-
-    setTimeout(() => {
-      setLoading(false);
-      onCancel();
-    }, 500);
-  };
+  const prompt = (msg: string) => messageApi.info(msg);
 
   const onCancel = () => {
     switch (true) {
@@ -147,23 +147,68 @@ export const useAction = () => {
     }
   };
 
+  const onConfirm = () => {
+    setLoading(true);
+
+    if (isOpenChangeStateModal) {
+      const newUserList = clone(userList);
+
+      newUserList[updateUserInformation.index as number].state = false;
+      setUserList(newUserList);
+    }
+
+    setTimeout(() => {
+      setLoading(false);
+      onCancel();
+    }, 1000);
+  };
+
   const onReset = () => {
     inputUserName !== "" && setInputUserName("");
     selectUserState !== null && setSelectUserState(null);
   };
 
-  const onCreateUserAccount = () => {
+  const onConfirmCreateUserAccount = () => {
     if (addUserName === "") {
-      message.info("请输入用户名");
+      prompt("请输入用户名");
     } else if (addUserPassword === "") {
-      message.info("请输入密码");
+      prompt("请输入密码");
     } else if (confirmUserPassword === "") {
-      message.info("请再次输入密码");
+      prompt("请再次输入密码");
     } else if (addUserPassword !== confirmUserPassword) {
-      message.info("二次密码不相同");
+      prompt("二次密码不相同");
     } else {
-      message.success("创建成功");
-      setIsOpenAddUserModal(false);
+      setLoading(true);
+
+      setTimeout(() => {
+        setLoading(false);
+        messageApi.success("创建成功");
+        onCancel();
+      }, 1000);
+    }
+  };
+
+  const onConfirmUpdateUserInformation = () => {
+    if (updateUserInformation.userName === "") {
+      prompt("请输入用户名");
+    } else if (updateUserInformation.originalPassword === "") {
+      prompt("请输入的原密码");
+    } else if (updateUserInformation.password === "") {
+      prompt("请新密码");
+    } else if (updateUserInformation.confirmPassword === "") {
+      prompt("请再次输入新密码");
+    } else if (
+      updateUserInformation.password !== updateUserInformation.confirmPassword
+    ) {
+      prompt("二次密码不相同");
+    } else {
+      setLoading(true);
+
+      setTimeout(() => {
+        setLoading(false);
+        messageApi.success("更新成功");
+        onCancel();
+      }, 1000);
     }
   };
 
@@ -171,7 +216,6 @@ export const useAction = () => {
     userList,
     inputUserName,
     selectUserState,
-    selectUserInformation,
     loading,
     isOpenChangeStateModal,
     isOpenAddUserModal,
@@ -180,11 +224,11 @@ export const useAction = () => {
     addUserName,
     addUserPassword,
     confirmUserPassword,
-    editUserInformation,
+    updateUserInformation,
+    contextHolder,
     setUserList,
     setInputUserName,
     setSelectUserState,
-    setSelectUserInformation,
     setLoading,
     setIsOpenChangeStateModal,
     setIsOpenAddUserModal,
@@ -196,7 +240,8 @@ export const useAction = () => {
     onConfirm,
     onCancel,
     onReset,
-    onCreateUserAccount,
-    setEditUserInformation,
+    onConfirmCreateUserAccount,
+    setUpdateUserInformation,
+    onConfirmUpdateUserInformation,
   };
 };

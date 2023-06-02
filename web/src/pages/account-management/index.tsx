@@ -1,39 +1,30 @@
 import {
   CheckOutlined,
   CloseOutlined,
-  CloseSquareOutlined,
   DeleteOutlined,
   ExclamationCircleOutlined,
   FormOutlined,
   ReloadOutlined,
   SearchOutlined,
-  UsergroupAddOutlined,
+  UserAddOutlined,
 } from "@ant-design/icons";
 import { Button, Input, Modal, Select, Switch, Table } from "antd";
 
-import { useAction } from "./hook";
-
-export interface IUserAccount {
-  id: string;
-  userName: string;
-  state: boolean;
-  createDate: string;
-}
+import { IUserAccountResponse, useAction } from "./hook";
 
 export const AccountManagement = () => {
   const {
     userList,
-    selectUserInformation,
     loading,
     isOpenChangeStateModal,
     isOpenAddUserModal,
     isOpenEditModal,
     isOpenDeleteModal,
-    editUserInformation,
+    updateUserInformation,
+    contextHolder,
     setUserList,
     setInputUserName,
     setSelectUserState,
-    setSelectUserInformation,
     setIsOpenChangeStateModal,
     setIsOpenAddUserModal,
     setIsOpenEditModal,
@@ -44,8 +35,9 @@ export const AccountManagement = () => {
     onConfirm,
     onCancel,
     onReset,
-    onCreateUserAccount,
-    setEditUserInformation,
+    onConfirmCreateUserAccount,
+    setUpdateUserInformation,
+    onConfirmUpdateUserInformation,
   } = useAction();
 
   const columns = [
@@ -82,7 +74,7 @@ export const AccountManagement = () => {
     {
       title: "操作",
       width: 240,
-      render: (_: string, record: IUserAccount, index: number) => {
+      render: (_: string, record: IUserAccountResponse, index: number) => {
         return (
           <div className="flex items-center">
             <div className="flex items-center hover:text-[#1777ff] transition-[300] cursor-pointer mr-[12px]">
@@ -92,7 +84,8 @@ export const AccountManagement = () => {
                   if (record.state) {
                     setIsOpenChangeStateModal(true);
 
-                    setSelectUserInformation({
+                    setUpdateUserInformation({
+                      id: record.id,
                       userName: record.userName,
                       index: index,
                     });
@@ -108,7 +101,17 @@ export const AccountManagement = () => {
             <Button
               type="primary"
               className="flex items-center text-[#fff] px-[8px] font-medium mr-[12px] h-[28px] rounded-none"
-              onClick={() => setIsOpenEditModal(true)}
+              onClick={() => {
+                setUpdateUserInformation((prevalue) => {
+                  return {
+                    ...prevalue,
+                    id: record.id,
+                    userName: record.userName,
+                  };
+                });
+
+                setIsOpenEditModal(true);
+              }}
             >
               <FormOutlined />
               <div className="ml-[6px]">编辑</div>
@@ -117,7 +120,14 @@ export const AccountManagement = () => {
               type="primary"
               className="flex items-center text-[#fff] px-[8px] font-medium h-[28px] rounded-none"
               danger
-              onClick={() => setIsOpenDeleteModal(true)}
+              onClick={() => {
+                setUpdateUserInformation({
+                  id: record.id,
+                  userName: record.userName,
+                });
+
+                setIsOpenDeleteModal(true);
+              }}
             >
               <DeleteOutlined />
               <div className="ml-[6px]">删除</div>
@@ -128,10 +138,11 @@ export const AccountManagement = () => {
     },
   ];
 
-  const titleStyle = "text-[.875rem] font-medium mb-[.5rem]";
+  const titleStyle = "text-[14px] font-medium mb-[8px]";
 
   return (
     <>
+      {contextHolder}
       <div className="pb-[32px] flex justify-between items-center">
         <div className="flex items-center">
           <Input
@@ -139,6 +150,7 @@ export const AccountManagement = () => {
             placeholder="请输入用户名"
             allowClear
             autoFocus
+            autoComplete="false"
             onChange={(event) => setInputUserName(event.target.value)}
           />
           <Select
@@ -172,7 +184,7 @@ export const AccountManagement = () => {
           className="flex items-center px-[8px] rounded-none"
           onClick={() => setIsOpenAddUserModal(true)}
         >
-          <UsergroupAddOutlined />
+          <UserAddOutlined />
           <div className="ml-[6px] font-semibold">添加用户</div>
         </Button>
       </div>
@@ -181,9 +193,7 @@ export const AccountManagement = () => {
         dataSource={userList}
         columns={columns}
         bordered
-        rowKey={(record) => {
-          return record.id;
-        }}
+        rowKey={(record) => record.id}
         scroll={{ y: 550 }}
         pagination={{
           pageSizeOptions: [10, 20],
@@ -196,9 +206,9 @@ export const AccountManagement = () => {
         width={420}
         open={isOpenAddUserModal}
         title={
-          <div className="pb-[8px] flex items-center text-[18px] ">
-            <UsergroupAddOutlined className="mr-[6px]" />
-            <div>添加用户</div>
+          <div className="flex items-center ">
+            <UserAddOutlined />
+            <div className="ml-[6px]">添加用户</div>
           </div>
         }
         onOk={onConfirm}
@@ -216,9 +226,10 @@ export const AccountManagement = () => {
             key="submit"
             type="primary"
             loading={loading}
-            onClick={onConfirm}
+            onClick={onConfirmCreateUserAccount}
+            className="font-medium"
           >
-            确认
+            确定
           </Button>,
         ]}
       >
@@ -292,7 +303,7 @@ export const AccountManagement = () => {
         <div className="pt-[16px]">
           确认停用用户名为
           <span className="font-semibold px-[6px]">
-            {selectUserInformation.userName}
+            {updateUserInformation.userName}
           </span>
           的账号吗？
         </div>
@@ -322,52 +333,71 @@ export const AccountManagement = () => {
             key="submit"
             type="primary"
             loading={loading}
-            onClick={onConfirm}
+            onClick={onConfirmUpdateUserInformation}
+            className="font-medium"
           >
-            确认
+            确定
           </Button>,
         ]}
       >
-        <div className="my-[2rem]">
-          <div className={titleStyle}>用户名</div>
-          <Input
-            defaultValue={editUserInformation.userName}
-            size="large"
-            className="text-[.875rem]"
-            onChange={(e) => {
-              setEditUserInformation((preValue) => {
-                return { ...preValue, teamName: e.target.value };
-              });
-            }}
-          />
-        </div>
-        <div className="my-[2rem]">
-          <div className={titleStyle}>原密码</div>
-          <Input.Password
-            placeholder="请输入原密码"
-            size="large"
-            className="text-[.875rem]"
-            autoComplete="new-password"
-          />
-        </div>
-        <div className="my-[2rem]">
-          <div className={titleStyle}>新密码</div>
-          <Input.Password
-            placeholder="请输入新密码"
-            size="large"
-            className="text-[.875rem]"
-            autoComplete="new-password"
-          />
-        </div>
-        <div className="my-[2rem]">
-          <div className={titleStyle}>确认新密码</div>
-          <Input.Password
-            placeholder="请再次输入新密码"
-            size="large"
-            className="text-[.875rem]"
-            autoComplete="new-password"
-          />
-        </div>
+        <form>
+          <div className="my-[32px]">
+            <div className={titleStyle}>用户名</div>
+            <Input
+              defaultValue={updateUserInformation.userName}
+              size="large"
+              className="text-[14px]"
+              autoCapitalize="false"
+              onChange={(event) => {
+                setUpdateUserInformation((preValue) => {
+                  return { ...preValue, userName: event.target.value };
+                });
+              }}
+            />
+          </div>
+          <div className="my-[32px]">
+            <div className={titleStyle}>原密码</div>
+            <Input.Password
+              placeholder="请输入原密码"
+              size="large"
+              className="text-[14px]"
+              autoComplete="new-password"
+              onChange={(event) => {
+                setUpdateUserInformation((preValue) => {
+                  return { ...preValue, originalPassword: event.target.value };
+                });
+              }}
+            />
+          </div>
+          <div className="my-[32px]">
+            <div className={titleStyle}>新密码</div>
+            <Input.Password
+              placeholder="请输入新密码"
+              size="large"
+              className="text-[14px]"
+              autoComplete="new-password"
+              onChange={(event) => {
+                setUpdateUserInformation((preValue) => {
+                  return { ...preValue, password: event.target.value };
+                });
+              }}
+            />
+          </div>
+          <div className="my-[32px]">
+            <div className={titleStyle}>确认新密码</div>
+            <Input.Password
+              placeholder="请再次输入新密码"
+              size="large"
+              className="text-[14px]"
+              autoComplete="new-password"
+              onChange={(event) => {
+                setUpdateUserInformation((preValue) => {
+                  return { ...preValue, confirmPassword: event.target.value };
+                });
+              }}
+            />
+          </div>
+        </form>
       </Modal>
       {/* 删除 */}
       <Modal
@@ -394,15 +424,16 @@ export const AccountManagement = () => {
             type="primary"
             loading={loading}
             onClick={onConfirm}
+            className="font-medium"
           >
-            确认
+            确定
           </Button>,
         ]}
       >
         <div className="pt-[16px]">
           确认停用用户名为
           <span className="font-semibold px-[6px]">
-            {selectUserInformation.userName}
+            {updateUserInformation.userName}
           </span>
           的账号吗？
         </div>

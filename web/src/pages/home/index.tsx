@@ -29,7 +29,9 @@ export const Home = () => {
       label: (
         <div className="flex items-center">
           <PoweroffOutlined className="pr-[0.6rem]" />
-          <Link to="/login">退出登录</Link>
+          <Link to="/login" className="text-[#000]">
+            退出登录
+          </Link>
         </div>
       ),
     },
@@ -89,12 +91,10 @@ export const Home = () => {
             arrow
             trigger={["click"]}
           >
-            <a>
-              <div className="flex items-center text-[1rem]">
-                <UserOutlined />
-                <div className="block ml-[0.5rem]">User</div>
-              </div>
-            </a>
+            <div className="flex items-center text-[1rem] cursor-pointer hover:text-[#69b1ff] transition-[300]">
+              <UserOutlined />
+              <div className="block ml-[0.5rem]">User</div>
+            </div>
           </Dropdown>
         </Header>
         <Content
