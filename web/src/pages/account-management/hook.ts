@@ -1,25 +1,11 @@
 import { message } from "antd";
 import { clone } from "ramda";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-export interface IUserAccountResponse {
-  id: string;
-  userName: string;
-  state: boolean;
-  createDate: string;
-}
-
-export interface ICreateUserDto {
-  userName: string;
-  password?: string;
-  confirmPassword?: string;
-}
-
-export interface IUpdateUserInformationDto extends ICreateUserDto {
-  id: string;
-  originalPassword?: string;
-  index?: number;
-}
+import {
+  IUpdateUserInformationRequest,
+  IUserAccountResponse,
+} from "@/dto/account-management";
 
 export const useAction = () => {
   const [userList, setUserList] = useState<IUserAccountResponse[]>([
@@ -118,15 +104,17 @@ export const useAction = () => {
 
   const [confirmUserPassword, setConfirmUserPassword] = useState<string>("");
 
+  const initUserInformation: IUpdateUserInformationRequest = {
+    id: "",
+    userName: "",
+    originalPassword: "",
+    password: "",
+    confirmPassword: "",
+    index: 0,
+  };
+
   const [updateUserInformation, setUpdateUserInformation] =
-    useState<IUpdateUserInformationDto>({
-      id: "",
-      userName: "",
-      originalPassword: "",
-      password: "",
-      confirmPassword: "",
-      index: 0,
-    });
+    useState<IUpdateUserInformationRequest>(initUserInformation);
 
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -142,8 +130,6 @@ export const useAction = () => {
         return setIsOpenEditModal(false);
       case isOpenDeleteModal:
         return setIsOpenDeleteModal(false);
-      default:
-        break;
     }
   };
 
@@ -176,7 +162,7 @@ export const useAction = () => {
     } else if (confirmUserPassword === "") {
       prompt("请再次输入密码");
     } else if (addUserPassword !== confirmUserPassword) {
-      prompt("二次密码不相同");
+      prompt("两次密码不相同");
     } else {
       setLoading(true);
 
@@ -200,7 +186,7 @@ export const useAction = () => {
     } else if (
       updateUserInformation.password !== updateUserInformation.confirmPassword
     ) {
-      prompt("二次密码不相同");
+      prompt("两次密码不相同");
     } else {
       setLoading(true);
 
@@ -208,6 +194,7 @@ export const useAction = () => {
         setLoading(false);
         messageApi.success("更新成功");
         onCancel();
+        setUpdateUserInformation(initUserInformation);
       }, 1000);
     }
   };
@@ -226,6 +213,7 @@ export const useAction = () => {
     confirmUserPassword,
     updateUserInformation,
     contextHolder,
+    initUserInformation,
     setUserList,
     setInputUserName,
     setSelectUserState,
