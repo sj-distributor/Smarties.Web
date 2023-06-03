@@ -36,7 +36,8 @@ export const Login = () => {
               allowClear
             />
             <Button
-              className="w-full bg-gradient-to-tr from-[#74bfc8] to-[#5c5cb4] hover:opacity-80 !text-[white] font-medium"
+              type="primary"
+              className="w-full hover:opacity-80 !text-[white] font-medium"
               size="large"
               onClick={() => navigate("/accountManagement")}
             >

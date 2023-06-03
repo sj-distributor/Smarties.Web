@@ -16,6 +16,7 @@ import { ChangeUserStateModal } from "./components/modal/change-user-state";
 import { DeleteUserModal } from "./components/modal/detele-user";
 import { EditUserInformationModal } from "./components/modal/edit-user-information";
 import { useAction } from "./hook";
+import styles from "./style/index.scss";
 
 export const AccountManagement = () => {
   const {
@@ -162,7 +163,7 @@ export const AccountManagement = () => {
           <Select
             allowClear
             placeholder="请选择状态"
-            className="mx-[.75rem] !rounded-none"
+            className={`mx-[.75rem] ${styles}`}
             onChange={(state) => setSelectUserState(state)}
             options={[
               { value: true, label: "正在使用" },

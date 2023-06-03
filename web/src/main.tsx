@@ -16,7 +16,7 @@ if (container) {
     <React.StrictMode>
       <ConfigProvider
         locale={zhCN}
-        theme={{ token: { colorPrimary: "#2082fd" } }}
+        theme={{ token: { colorPrimary: "#1890ff" } }}
       >
         <App />
       </ConfigProvider>
