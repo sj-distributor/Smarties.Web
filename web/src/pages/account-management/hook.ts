@@ -130,6 +130,8 @@ export const useAction = () => {
         return setIsOpenEditModal(false);
       case isOpenDeleteModal:
         return setIsOpenDeleteModal(false);
+      default:
+        break;
     }
   };
 
@@ -145,6 +147,7 @@ export const useAction = () => {
 
     setTimeout(() => {
       setLoading(false);
+      messageApi.success("操作成功");
       onCancel();
     }, 1000);
   };
@@ -214,6 +217,7 @@ export const useAction = () => {
     updateUserInformation,
     contextHolder,
     initUserInformation,
+    messageApi,
     setUserList,
     setInputUserName,
     setSelectUserState,

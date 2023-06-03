@@ -27,6 +27,7 @@ export const AccountManagement = () => {
     isOpenDeleteModal,
     updateUserInformation,
     contextHolder,
+    messageApi,
     setUserList,
     setInputUserName,
     setSelectUserState,
@@ -97,6 +98,8 @@ export const AccountManagement = () => {
                   } else {
                     record.state = true;
                     setUserList([...userList]);
+
+                    messageApi.success("操作成功");
                   }
                 }}
                 checkedChildren={<CheckOutlined />}
