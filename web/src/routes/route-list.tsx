@@ -1,4 +1,4 @@
-import { PieChartOutlined } from "@ant-design/icons";
+import { PieChartOutlined, UsergroupAddOutlined } from "@ant-design/icons";
 import { ReactElement } from "react";
 import { Link } from "react-router-dom";
 
@@ -24,7 +24,7 @@ export interface IRouteListDto {
 export const RouteList: IRouteListDto[] = [
   {
     key: "accountManagement",
-    icon: <PieChartOutlined />,
+    icon: <UsergroupAddOutlined />,
     path: "/accountManagement",
     label: <Link to={"/accountManagement"}>账号管理</Link>,
     component: <AccountManagement />,

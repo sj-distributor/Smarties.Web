@@ -1,5 +1,7 @@
 import "./index.css";
 
+import { ConfigProvider } from "antd";
+import zhCN from "antd/locale/zh_CN";
 import React from "react";
 import ReactDOM from "react-dom/client";
 
@@ -12,7 +14,12 @@ if (container) {
 
   root.render(
     <React.StrictMode>
-      <App />
+      <ConfigProvider
+        locale={zhCN}
+        theme={{ token: { colorPrimary: "#1890ff" } }}
+      >
+        <App />
+      </ConfigProvider>
     </React.StrictMode>
   );
 }
