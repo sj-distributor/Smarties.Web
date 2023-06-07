@@ -3,6 +3,7 @@ import { clone } from "ramda";
 import { useState } from "react";
 
 import {
+  ICreateUserRequest,
   IUpdateUserInformationRequest,
   IUserAccountResponse,
 } from "@/dto/account-management";
@@ -83,6 +84,21 @@ export const useAction = () => {
     },
   ]);
 
+  const initCreateUesrInformation: ICreateUserRequest = {
+    userName: "",
+    password: "",
+    confirmPassword: "",
+  };
+
+  const initUpdateUserInformation: IUpdateUserInformationRequest = {
+    id: "",
+    userName: "",
+    originalPassword: "",
+    password: "",
+    confirmPassword: "",
+    index: 0,
+  };
+
   const [inputUserName, setInputUserName] = useState<string>("");
 
   const [selectUserState, setSelectUserState] = useState<boolean | null>(null);
@@ -98,27 +114,13 @@ export const useAction = () => {
 
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState<boolean>(false);
 
-  const [addUserName, setAddUserName] = useState<string>("");
-
-  const [addUserPassword, setAddUserPassword] = useState<string>("");
-
-  const [confirmUserPassword, setConfirmUserPassword] = useState<string>("");
-
-  const initUserInformation: IUpdateUserInformationRequest = {
-    id: "",
-    userName: "",
-    originalPassword: "",
-    password: "",
-    confirmPassword: "",
-    index: 0,
-  };
+  const [createUserInformation, setCreateUserInformation] =
+    useState<ICreateUserRequest>(initUpdateUserInformation);
 
   const [updateUserInformation, setUpdateUserInformation] =
-    useState<IUpdateUserInformationRequest>(initUserInformation);
+    useState<IUpdateUserInformationRequest>(initUpdateUserInformation);
 
   const [messageApi, contextHolder] = message.useMessage();
-
-  const prompt = (msg: string) => messageApi.info(msg);
 
   const onCancel = () => {
     switch (true) {
@@ -138,17 +140,18 @@ export const useAction = () => {
   const onConfirm = () => {
     setLoading(true);
 
-    if (isOpenChangeStateModal) {
-      const newUserList = clone(userList);
-
-      newUserList[updateUserInformation.index as number].state = false;
-      setUserList(newUserList);
-    }
-
     setTimeout(() => {
       setLoading(false);
-      messageApi.success("操作成功");
       onCancel();
+
+      if (isOpenChangeStateModal) {
+        const newUserList = clone(userList);
+
+        newUserList[updateUserInformation.index as number].state = false;
+        setUserList(newUserList);
+      }
+
+      message.success("操作成功");
     }, 1000);
   };
 
@@ -158,14 +161,16 @@ export const useAction = () => {
   };
 
   const onConfirmCreateUserAccount = () => {
-    if (addUserName === "") {
-      prompt("请输入用户名");
-    } else if (addUserPassword === "") {
-      prompt("请输入密码");
-    } else if (confirmUserPassword === "") {
-      prompt("请再次输入密码");
-    } else if (addUserPassword !== confirmUserPassword) {
-      prompt("两次密码不相同");
+    if (createUserInformation.userName === "") {
+      messageApi.info("请输入用户名");
+    } else if (createUserInformation.password === "") {
+      messageApi.info("请输入密码");
+    } else if (createUserInformation.confirmPassword === "") {
+      messageApi.info("请再次输入密码");
+    } else if (
+      createUserInformation.password !== createUserInformation.confirmPassword
+    ) {
+      messageApi.info("两次密码不相同");
     } else {
       setLoading(true);
 
@@ -173,23 +178,24 @@ export const useAction = () => {
         setLoading(false);
         messageApi.success("创建成功");
         onCancel();
+        setCreateUserInformation(initCreateUesrInformation);
       }, 1000);
     }
   };
 
   const onConfirmUpdateUserInformation = () => {
     if (updateUserInformation.userName === "") {
-      prompt("请输入用户名");
+      messageApi.info("请输入用户名");
     } else if (updateUserInformation.originalPassword === "") {
-      prompt("请输入的原密码");
+      messageApi.info("请输入的原密码");
     } else if (updateUserInformation.password === "") {
-      prompt("请新密码");
+      messageApi.info("请新密码");
     } else if (updateUserInformation.confirmPassword === "") {
-      prompt("请再次输入新密码");
+      messageApi.info("请再次输入新密码");
     } else if (
       updateUserInformation.password !== updateUserInformation.confirmPassword
     ) {
-      prompt("两次密码不相同");
+      messageApi.info("两次密码不相同");
     } else {
       setLoading(true);
 
@@ -197,7 +203,7 @@ export const useAction = () => {
         setLoading(false);
         messageApi.success("更新成功");
         onCancel();
-        setUpdateUserInformation(initUserInformation);
+        setUpdateUserInformation(initUpdateUserInformation);
       }, 1000);
     }
   };
@@ -211,13 +217,11 @@ export const useAction = () => {
     isOpenAddUserModal,
     isOpenEditModal,
     isOpenDeleteModal,
-    addUserName,
-    addUserPassword,
-    confirmUserPassword,
     updateUserInformation,
-    contextHolder,
-    initUserInformation,
+    initUpdateUserInformation,
+    createUserInformation,
     messageApi,
+    contextHolder,
     setUserList,
     setInputUserName,
     setSelectUserState,
@@ -226,14 +230,12 @@ export const useAction = () => {
     setIsOpenAddUserModal,
     setIsOpenEditModal,
     setIsOpenDeleteModal,
-    setAddUserName,
-    setAddUserPassword,
-    setConfirmUserPassword,
     onConfirm,
     onCancel,
     onReset,
     onConfirmCreateUserAccount,
     setUpdateUserInformation,
     onConfirmUpdateUserInformation,
+    setCreateUserInformation,
   };
 };

@@ -1,18 +1,17 @@
 import { UserAddOutlined } from "@ant-design/icons";
 import { Button, Input, Modal } from "antd";
 
-import { ICreateUserProps } from "@/dto/account-management";
+import { ICreateUserProps } from "./props";
 
 export const CreateUserModal = (props: ICreateUserProps) => {
   const {
     loading,
     isOpenAddUserModal,
+    createUserInformation,
     onConfirm,
     onCancel,
     onConfirmCreateUserAccount,
-    setAddUserName,
-    setAddUserPassword,
-    setConfirmUserPassword,
+    setCreateUserInformation,
   } = props;
 
   return (
@@ -56,7 +55,12 @@ export const CreateUserModal = (props: ICreateUserProps) => {
             autoComplete="false"
             placeholder="请输入用户名"
             className="text-[.875rem] py-[.6rem]"
-            onChange={(event) => setAddUserName(event.target.value)}
+            value={createUserInformation.userName}
+            onChange={(event) => {
+              setCreateUserInformation((preValue) => {
+                return { ...preValue, userName: event.target.value };
+              });
+            }}
           />
         </div>
         <div className="my-[2rem]">
@@ -67,7 +71,12 @@ export const CreateUserModal = (props: ICreateUserProps) => {
             placeholder="请输入密码"
             autoComplete="new-password"
             className="text-[.875rem] py-[.6rem]"
-            onChange={(event) => setAddUserPassword(event.target.value)}
+            value={createUserInformation.password}
+            onChange={(event) => {
+              setCreateUserInformation((preValue) => {
+                return { ...preValue, password: event.target.value };
+              });
+            }}
           />
         </div>
         <div className="my-[2rem]">
@@ -78,7 +87,12 @@ export const CreateUserModal = (props: ICreateUserProps) => {
             placeholder="请再次输入密码"
             autoComplete="new-password"
             className="text-[.875rem] py-[.6rem]"
-            onChange={(event) => setConfirmUserPassword(event.target.value)}
+            value={createUserInformation.confirmPassword}
+            onChange={(event) => {
+              setCreateUserInformation((preValue) => {
+                return { ...preValue, confirmPassword: event.target.value };
+              });
+            }}
           />
         </div>
       </form>

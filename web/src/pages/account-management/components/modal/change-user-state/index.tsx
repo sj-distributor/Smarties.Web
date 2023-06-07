@@ -1,7 +1,7 @@
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { Button, Modal } from "antd";
 
-import { IChangeUserStateProps } from "@/dto/account-management";
+import { IChangeUserStateProps } from "./props";
 
 export const ChangeUserStateModal = (props: IChangeUserStateProps) => {
   const {

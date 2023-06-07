@@ -1,3 +1,5 @@
+import "./style/index.scss";
+
 import {
   CheckOutlined,
   CloseOutlined,
@@ -7,7 +9,7 @@ import {
   SearchOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
-import { Button, Input, Select, Switch, Table } from "antd";
+import { App, Button, Input, Select, Switch, Table } from "antd";
 
 import { IUserAccountResponse } from "@/dto/account-management";
 
@@ -16,9 +18,10 @@ import { ChangeUserStateModal } from "./components/modal/change-user-state";
 import { DeleteUserModal } from "./components/modal/detele-user";
 import { EditUserInformationModal } from "./components/modal/edit-user-information";
 import { useAction } from "./hook";
-import styles from "./style/index.scss";
 
 export const AccountManagement = () => {
+  const { message } = App.useApp();
+
   const {
     userList,
     loading,
@@ -27,8 +30,9 @@ export const AccountManagement = () => {
     isOpenEditModal,
     isOpenDeleteModal,
     updateUserInformation,
-    contextHolder,
+    createUserInformation,
     messageApi,
+    contextHolder,
     setUserList,
     setInputUserName,
     setSelectUserState,
@@ -36,15 +40,13 @@ export const AccountManagement = () => {
     setIsOpenAddUserModal,
     setIsOpenEditModal,
     setIsOpenDeleteModal,
-    setAddUserName,
-    setAddUserPassword,
-    setConfirmUserPassword,
     onConfirm,
     onCancel,
     onReset,
     onConfirmCreateUserAccount,
     setUpdateUserInformation,
     onConfirmUpdateUserInformation,
+    setCreateUserInformation,
   } = useAction();
 
   const columns = [
@@ -63,24 +65,20 @@ export const AccountManagement = () => {
       dataIndex: "state",
       key: "state",
       render: (text: number) => {
-        if (text) {
-          return (
-            <div className="max-w-max p-[.125rem_.3125rem] bg-[#66ee71] text-[#fff] font-semibold">
-              正在使用
-            </div>
-          );
-        } else {
-          return (
-            <div className="max-w-max bg-[#fbeedb] p-[.125rem_.3125rem] text-orange-400 font-semibold">
-              已停用
-            </div>
-          );
-        }
+        return (
+          <div
+            className={`max-w-max p-[.125rem_.3125rem] font-semibold ${
+              text ? "bg-[#00A854] text-[#fff]" : "bg-[#fbeedb] text-orange-400"
+            }`}
+          >
+            {text ? "正在使用" : "已停用"}
+          </div>
+        );
       },
     },
     {
       title: "操作",
-      width: 240,
+      width: 165,
       render: (_: string, record: IUserAccountResponse, index: number) => {
         return (
           <div className="flex items-center">
@@ -107,9 +105,10 @@ export const AccountManagement = () => {
                 unCheckedChildren={<CloseOutlined />}
               />
             </div>
+
             <Button
               type="primary"
-              className="flex items-center text-[#fff] px-[.5rem] font-medium mr-[.75rem] h-[1.75rem] rounded-none"
+              className="flex items-center text-[#fff] text-[1rem] px-[.375rem] font-medium mr-[.75rem] h-[1.75rem] rounded-none"
               onClick={() => {
                 setUpdateUserInformation((preValue) => {
                   return {
@@ -123,12 +122,11 @@ export const AccountManagement = () => {
               }}
             >
               <FormOutlined />
-              <div className="ml-[.375rem]">编辑</div>
             </Button>
             <Button
               danger
               type="primary"
-              className="flex items-center text-[#fff] px-[.5rem] font-medium h-[1.75rem] rounded-none"
+              className="flex items-center text-[#fff] text-[1rem] px-[.375rem] font-medium h-[1.75rem] rounded-none"
               onClick={() => {
                 setUpdateUserInformation({
                   id: record.id,
@@ -139,7 +137,6 @@ export const AccountManagement = () => {
               }}
             >
               <DeleteOutlined />
-              <div className="ml-[.375rem]">删除</div>
             </Button>
           </div>
         );
@@ -163,7 +160,7 @@ export const AccountManagement = () => {
           <Select
             allowClear
             placeholder="请选择状态"
-            className={`mx-[.75rem] ${styles}`}
+            className={`mx-[.75rem]`}
             onChange={(state) => setSelectUserState(state)}
             options={[
               { value: true, label: "正在使用" },
@@ -175,7 +172,12 @@ export const AccountManagement = () => {
             className="mr-[.75rem] font-semibold rounded-none flex items-center px-[.5rem]"
           >
             <SearchOutlined />
-            <div className="ml-[.375rem] font-semibold">搜索</div>
+            <div
+              className="ml-[.375rem] font-semibold"
+              onClick={() => message.success("111")}
+            >
+              搜索
+            </div>
           </Button>
           <Button
             type="primary"
@@ -203,7 +205,7 @@ export const AccountManagement = () => {
         className="!rounded-none"
         rowKey={(record) => record.id}
         pagination={{
-          pageSizeOptions: [10, 20],
+          pageSizeOptions: [10, 20, 30],
           showQuickJumper: true,
           showSizeChanger: true,
         }}
@@ -213,10 +215,9 @@ export const AccountManagement = () => {
         isOpenAddUserModal={isOpenAddUserModal}
         onConfirm={onConfirm}
         onCancel={onCancel}
+        createUserInformation={createUserInformation}
+        setCreateUserInformation={setCreateUserInformation}
         onConfirmCreateUserAccount={onConfirmCreateUserAccount}
-        setAddUserName={setAddUserName}
-        setAddUserPassword={setAddUserPassword}
-        setConfirmUserPassword={setConfirmUserPassword}
       />
       <ChangeUserStateModal
         loading={loading}
@@ -230,9 +231,9 @@ export const AccountManagement = () => {
         isOpenEditModal={isOpenEditModal}
         onConfirm={onConfirm}
         onCancel={onCancel}
-        onConfirmUpdateUserInformation={onConfirmUpdateUserInformation}
         updateUserInformation={updateUserInformation}
         setUpdateUserInformation={setUpdateUserInformation}
+        onConfirmUpdateUserInformation={onConfirmUpdateUserInformation}
       />
       <DeleteUserModal
         loading={loading}

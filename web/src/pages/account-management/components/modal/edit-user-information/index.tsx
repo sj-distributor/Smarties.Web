@@ -1,10 +1,7 @@
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { Button, Input, Modal } from "antd";
 
-import {
-  IUpdateUserInformationProps,
-  IUpdateUserInformationRequest,
-} from "@/dto/account-management";
+import { IUpdateUserInformationProps } from "./props";
 
 export const EditUserInformationModal = (
   props: IUpdateUserInformationProps
@@ -63,14 +60,12 @@ export const EditUserInformationModal = (
             className="text-[.875rem]"
             value={updateUserInformation.userName}
             onChange={(event) => {
-              setUpdateUserInformation(
-                (preValue: IUpdateUserInformationRequest) => {
-                  return {
-                    ...preValue,
-                    userName: event.target.value,
-                  };
-                }
-              );
+              setUpdateUserInformation((preValue) => {
+                return {
+                  ...preValue,
+                  userName: event.target.value,
+                };
+              });
             }}
           />
         </div>

@@ -1,7 +1,7 @@
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { Button, Modal } from "antd";
 
-import { IDeleteUserProps } from "@/dto/account-management";
+import { IDeleteUserProps } from "./props";
 
 export const DeleteUserModal = (props: IDeleteUserProps) => {
   const {
