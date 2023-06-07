@@ -12,6 +12,9 @@
     "deploy": "npm run build",
     "lint": "eslint --cache --report-unused-disable-directives ."
   },
+  "resolutions": {
+    "workbox-webpack-plugin": "6.4.1"
+  },
   "dependencies": {
     "@ant-design/icons": "^5.1.4",
     "@sj-distributor/eslint-plugin-react": "^0.7.1",
